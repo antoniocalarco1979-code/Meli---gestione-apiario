@@ -1,7 +1,7 @@
 {
   "name": "MELI - Gestione Apiario",
   "short_name": "MELI",
-  "start_url": "index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#fff7e6",
   "theme_color": "#d9961f",

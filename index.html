@@ -14,69 +14,122 @@
     :root{--honey:#d9961f;--dark:#2b1b05;--cream:#fff7e6;--card:#ffffff}
     *{box-sizing:border-box}
     body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#fff7e6,#f1dfb8);color:var(--dark)}
-    header{padding:34px 22px 18px;background:linear-gradient(135deg,#f7c85a,#d9961f);border-bottom-left-radius:28px;border-bottom-right-radius:28px;box-shadow:0 8px 24px #0002}
-    h1{font-size:44px;margin:0;font-weight:800;letter-spacing:.5px}
-    .subtitle{margin-top:6px;font-size:16px;opacity:.85}
-    main{padding:20px;max-width:900px;margin:auto}
+    header{padding:30px 22px 18px;background:linear-gradient(135deg,#f7c85a,#d9961f);border-bottom-left-radius:28px;border-bottom-right-radius:28px;box-shadow:0 8px 24px #0002;position:sticky;top:0;z-index:5}
+    h1{font-size:40px;margin:0;font-weight:800}
+    .subtitle{margin-top:6px;font-size:15px;opacity:.85}
+    main{padding:18px;max-width:900px;margin:auto}
     .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-    .card{background:var(--card);border-radius:22px;padding:20px;min-height:112px;box-shadow:0 8px 20px #00000012;border:1px solid #ffffff}
-    .emoji{font-size:34px}
-    .card h2{font-size:18px;margin:10px 0 4px}
-    .card p{font-size:13px;margin:0;color:#735420}
-    .wide{grid-column:1/-1}
-    button{width:100%;border:0;border-radius:16px;background:var(--dark);color:white;padding:14px;font-weight:700;font-size:16px;margin-top:14px}
-    textarea,input{width:100%;border:1px solid #e1c78b;border-radius:14px;padding:12px;font-size:15px;background:#fffdf8}
+    .card{background:var(--card);border-radius:22px;padding:18px;min-height:112px;box-shadow:0 8px 20px #00000012;border:1px solid #fff;cursor:pointer}
+    .card:active{transform:scale(.98)}
+    .emoji{font-size:34px}.card h2{font-size:17px;margin:10px 0 4px}.card p{font-size:13px;margin:0;color:#735420}
+    .page{display:none}.page.active{display:block}
+    .back{border:0;border-radius:14px;background:#2b1b05;color:white;padding:11px 14px;font-weight:700;margin-bottom:14px}
+    .panel{background:#fff;border-radius:22px;padding:18px;box-shadow:0 8px 20px #00000012}
     label{font-weight:700;font-size:14px;display:block;margin:12px 0 6px}
-    .note{background:#fffdf8;border-radius:18px;padding:14px;margin-top:14px;border:1px solid #ead7a8}
-    @media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}.wide{grid-column:span 3}}
+    input,textarea,select{width:100%;border:1px solid #e1c78b;border-radius:14px;padding:12px;font-size:16px;background:#fffdf8}
+    textarea{min-height:100px}
+    .save{width:100%;border:0;border-radius:16px;background:#d9961f;color:#2b1b05;padding:14px;font-weight:800;font-size:16px;margin-top:14px}
+    .item{background:#fffdf8;border:1px solid #ead7a8;border-radius:16px;padding:12px;margin-top:10px}
+    small{color:#735420}
+    @media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}}
   </style>
 </head>
 <body>
 <header>
   <h1>🐝 MELI</h1>
-  <div class="subtitle">Gestione rapida del tuo apiario</div>
+  <div class="subtitle" id="subtitle">Gestione rapida del tuo apiario</div>
 </header>
 
 <main>
-  <section class="grid">
-    <div class="card"><div class="emoji">📄</div><h2>Visita apiario</h2><p>Annota controlli, favi, covata e scorte.</p></div>
-    <div class="card"><div class="emoji">🍯</div><h2>Produzione miele</h2><p>Registra raccolta, smielatura e vasetti.</p></div>
-    <div class="card"><div class="emoji">💊</div><h2>Trattamenti</h2><p>Promemoria antivarroa e interventi sanitari.</p></div>
-    <div class="card"><div class="emoji">👑</div><h2>Regine</h2><p>Età, stato, sostituzioni e note.</p></div>
-    <div class="card"><div class="emoji">📷</div><h2>Foto</h2><p>Spazio per catalogare immagini delle arnie.</p></div>
-    <div class="card"><div class="emoji">📁</div><h2>Documenti</h2><p>Schede, fatture, registri e PDF.</p></div>
-
-    <div class="card wide">
-      <div class="emoji">📝</div>
-      <h2>Nota veloce</h2>
-      <label for="titolo">Titolo</label>
-      <input id="titolo" placeholder="Es. Arnia 1 - controllo">
-      <label for="nota">Note</label>
-      <textarea id="nota" rows="5" placeholder="Scrivi qui..."></textarea>
-      <button onclick="salvaNota()">Salva nota sul dispositivo</button>
-      <div id="listaNote"></div>
+  <section id="home" class="page active">
+    <div class="grid">
+      <div class="card" onclick="apri('visita')"><div class="emoji">📄</div><h2>Visita apiario</h2><p>Controlli, covata, scorte e note.</p></div>
+      <div class="card" onclick="apri('arnie')"><div class="emoji">🐝</div><h2>Le mie arnie</h2><p>Registro rapido delle arnie.</p></div>
+      <div class="card" onclick="apri('produzione')"><div class="emoji">🍯</div><h2>Produzione miele</h2><p>Raccolta e smielatura.</p></div>
+      <div class="card" onclick="apri('trattamenti')"><div class="emoji">💊</div><h2>Trattamenti</h2><p>Interventi e promemoria.</p></div>
+      <div class="card" onclick="apri('regine')"><div class="emoji">👑</div><h2>Regine</h2><p>Stato e sostituzioni.</p></div>
+      <div class="card" onclick="apri('note')"><div class="emoji">📝</div><h2>Note veloci</h2><p>Annotazioni libere.</p></div>
     </div>
   </section>
+
+  <section id="visita" class="page"></section>
+  <section id="arnie" class="page"></section>
+  <section id="produzione" class="page"></section>
+  <section id="trattamenti" class="page"></section>
+  <section id="regine" class="page"></section>
+  <section id="note" class="page"></section>
 </main>
 
 <script>
-function salvaNota(){
-  const titolo=document.getElementById('titolo').value || 'Nota apiario';
-  const testo=document.getElementById('nota').value;
-  if(!testo.trim()){alert('Scrivi prima una nota.');return;}
-  const note=JSON.parse(localStorage.getItem('meli_note')||'[]');
-  note.unshift({titolo,testo,data:new Date().toLocaleString('it-IT')});
-  localStorage.setItem('meli_note',JSON.stringify(note));
-  document.getElementById('titolo').value='';
-  document.getElementById('nota').value='';
-  mostraNote();
+const sezioni = {
+  visita:{titolo:"📄 Visita apiario", campi:[
+    ["date","Data visita"],["text","Arnia / numero"],["select","Forza famiglia",["Debole","Media","Forte"]],
+    ["select","Covata",["Assente","Poca","Buona","Molto buona"]],["select","Scorte",["Scarse","Sufficienti","Abbondanti"]],
+    ["textarea","Note visita"]
+  ]},
+  arnie:{titolo:"🐝 Le mie arnie", campi:[
+    ["text","Numero arnia"],["text","Posizione"],["select","Stato",["Attiva","Da controllare","Debole","Orfana","Sciamata"]],
+    ["textarea","Note arnia"]
+  ]},
+  produzione:{titolo:"🍯 Produzione miele", campi:[
+    ["date","Data"],["text","Tipo miele"],["number","Kg raccolti"],["number","Vasetti prodotti"],["textarea","Note produzione"]
+  ]},
+  trattamenti:{titolo:"💊 Trattamenti", campi:[
+    ["date","Data trattamento"],["text","Prodotto / principio attivo"],["text","Arnie trattate"],["textarea","Dosaggio e note"]
+  ]},
+  regine:{titolo:"👑 Regine", campi:[
+    ["text","Arnia"],["number","Anno regina"],["select","Stato regina",["Presente","Da verificare","Da sostituire","Sostituita"]],
+    ["textarea","Note regina"]
+  ]},
+  note:{titolo:"📝 Note veloci", campi:[
+    ["text","Titolo"],["textarea","Nota"]
+  ]}
+};
+
+function creaPagina(id){
+  const s = sezioni[id];
+  const el = document.getElementById(id);
+  let html = `<button class="back" onclick="apri('home')">← Home</button><div class="panel"><h2>${s.titolo}</h2>`;
+  s.campi.forEach((c,i)=>{
+    html += `<label>${c[1]}</label>`;
+    if(c[0]==="textarea") html += `<textarea id="${id}_${i}"></textarea>`;
+    else if(c[0]==="select") html += `<select id="${id}_${i}">${c[2].map(v=>`<option>${v}</option>`).join("")}</select>`;
+    else html += `<input type="${c[0]}" id="${id}_${i}">`;
+  });
+  html += `<button class="save" onclick="salva('${id}')">Salva</button><div id="lista_${id}"></div></div>`;
+  el.innerHTML = html;
+  mostra(id);
 }
-function mostraNote(){
-  const note=JSON.parse(localStorage.getItem('meli_note')||'[]');
-  document.getElementById('listaNote').innerHTML=note.slice(0,5).map(n=>`<div class="note"><b>${n.titolo}</b><br><small>${n.data}</small><br>${n.testo}</div>`).join('');
+Object.keys(sezioni).forEach(creaPagina);
+
+function apri(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('subtitle').textContent = id==='home' ? 'Gestione rapida del tuo apiario' : sezioni[id].titolo;
+  window.scrollTo(0,0);
 }
+
+function salva(id){
+  const s = sezioni[id];
+  const record = {dataSalvataggio:new Date().toLocaleString('it-IT')};
+  s.campi.forEach((c,i)=>record[c[1]]=document.getElementById(`${id}_${i}`).value);
+  const archivio = JSON.parse(localStorage.getItem('meli_'+id)||'[]');
+  archivio.unshift(record);
+  localStorage.setItem('meli_'+id, JSON.stringify(archivio));
+  s.campi.forEach((c,i)=>document.getElementById(`${id}_${i}`).value="");
+  mostra(id);
+}
+
+function mostra(id){
+  const lista = document.getElementById('lista_'+id);
+  const archivio = JSON.parse(localStorage.getItem('meli_'+id)||'[]');
+  lista.innerHTML = archivio.slice(0,10).map(r=>{
+    const righe = Object.entries(r).map(([k,v])=>`<b>${k}</b>: ${v || "-"}`).join("<br>");
+    return `<div class="item">${righe}</div>`;
+  }).join("");
+}
+
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
-mostraNote();
 </script>
 </body>
 </html>
