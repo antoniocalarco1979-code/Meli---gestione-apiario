@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#d9961f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="MELI">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <title>MELI</title>
+  <style>
+    :root{--honey:#d9961f;--dark:#2b1b05;--cream:#fff7e6;--card:#ffffff}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(180deg,#fff7e6,#f1dfb8);color:var(--dark)}
+    header{padding:34px 22px 18px;background:linear-gradient(135deg,#f7c85a,#d9961f);border-bottom-left-radius:28px;border-bottom-right-radius:28px;box-shadow:0 8px 24px #0002}
+    h1{font-size:44px;margin:0;font-weight:800;letter-spacing:.5px}
+    .subtitle{margin-top:6px;font-size:16px;opacity:.85}
+    main{padding:20px;max-width:900px;margin:auto}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .card{background:var(--card);border-radius:22px;padding:20px;min-height:112px;box-shadow:0 8px 20px #00000012;border:1px solid #ffffff}
+    .emoji{font-size:34px}
+    .card h2{font-size:18px;margin:10px 0 4px}
+    .card p{font-size:13px;margin:0;color:#735420}
+    .wide{grid-column:1/-1}
+    button{width:100%;border:0;border-radius:16px;background:var(--dark);color:white;padding:14px;font-weight:700;font-size:16px;margin-top:14px}
+    textarea,input{width:100%;border:1px solid #e1c78b;border-radius:14px;padding:12px;font-size:15px;background:#fffdf8}
+    label{font-weight:700;font-size:14px;display:block;margin:12px 0 6px}
+    .note{background:#fffdf8;border-radius:18px;padding:14px;margin-top:14px;border:1px solid #ead7a8}
+    @media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}.wide{grid-column:span 3}}
+  </style>
+</head>
+<body>
+<header>
+  <h1>🐝 MELI</h1>
+  <div class="subtitle">Gestione rapida del tuo apiario</div>
+</header>
+
+<main>
+  <section class="grid">
+    <div class="card"><div class="emoji">📄</div><h2>Visita apiario</h2><p>Annota controlli, favi, covata e scorte.</p></div>
+    <div class="card"><div class="emoji">🍯</div><h2>Produzione miele</h2><p>Registra raccolta, smielatura e vasetti.</p></div>
+    <div class="card"><div class="emoji">💊</div><h2>Trattamenti</h2><p>Promemoria antivarroa e interventi sanitari.</p></div>
+    <div class="card"><div class="emoji">👑</div><h2>Regine</h2><p>Età, stato, sostituzioni e note.</p></div>
+    <div class="card"><div class="emoji">📷</div><h2>Foto</h2><p>Spazio per catalogare immagini delle arnie.</p></div>
+    <div class="card"><div class="emoji">📁</div><h2>Documenti</h2><p>Schede, fatture, registri e PDF.</p></div>
+
+    <div class="card wide">
+      <div class="emoji">📝</div>
+      <h2>Nota veloce</h2>
+      <label for="titolo">Titolo</label>
+      <input id="titolo" placeholder="Es. Arnia 1 - controllo">
+      <label for="nota">Note</label>
+      <textarea id="nota" rows="5" placeholder="Scrivi qui..."></textarea>
+      <button onclick="salvaNota()">Salva nota sul dispositivo</button>
+      <div id="listaNote"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+function salvaNota(){
+  const titolo=document.getElementById('titolo').value || 'Nota apiario';
+  const testo=document.getElementById('nota').value;
+  if(!testo.trim()){alert('Scrivi prima una nota.');return;}
+  const note=JSON.parse(localStorage.getItem('meli_note')||'[]');
+  note.unshift({titolo,testo,data:new Date().toLocaleString('it-IT')});
+  localStorage.setItem('meli_note',JSON.stringify(note));
+  document.getElementById('titolo').value='';
+  document.getElementById('nota').value='';
+  mostraNote();
+}
+function mostraNote(){
+  const note=JSON.parse(localStorage.getItem('meli_note')||'[]');
+  document.getElementById('listaNote').innerHTML=note.slice(0,5).map(n=>`<div class="note"><b>${n.titolo}</b><br><small>${n.data}</small><br>${n.testo}</div>`).join('');
+}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
+mostraNote();
+</script>
+</body>
+</html>
