@@ -39,7 +39,10 @@ textarea{min-height:100px}.save{width:100%;border:0;border-radius:16px;backgroun
 <label>Covata</label><select id="visita_covata"><option>Assente</option><option>Poca</option><option>Buona</option><option>Molto buona</option></select>
 <label>Scorte</label><select id="visita_scorte"><option>Scarse</option><option>Sufficienti</option><option>Abbondanti</option></select>
 <label>Note visita</label><textarea id="visita_note"></textarea>
-<button class="save" onclick="salvaVisita()">Salva visita</button><div id="lista_visite"></div>
+<label>Foto della visita</label>
+<input id="foto_visita_input" type="file" accept="image/*" capture="environment" multiple onchange="aggiungiFotoVisitaTemp(event)">
+<div id="anteprima_foto_visita" class="photo-grid"></div>
+<button class="save" onclick="salvaVisita()">Salva visita con foto</button><div id="lista_visite"></div>
 </div></section>
 
 <section id="arnie" class="page"><a class="back" href="#">← Home</a>
@@ -119,7 +122,7 @@ textarea{min-height:100px}.save{width:100%;border:0;border-radius:16px;backgroun
 
 <section id="home">
 <div class="grid">
-<a class="card" href="#visita"><div class="emoji">📄</div><h2>Visita apiario</h2><p>Apri scheda visita.</p></a>
+<a class="card" href="#visita"><div class="emoji">📄</div><h2>Visita apiario</h2><p>Scheda visita con foto.</p></a>
 <a class="card" href="#arnie"><div class="emoji">🐝</div><h2>Le mie arnie</h2><p>Sottosezione per ogni arnia.</p></a>
 <a class="card" href="#produzione"><div class="emoji">🍯</div><h2>Produzione miele</h2><p>Raccolta e vasetti.</p></a>
 <a class="card" href="#trattamenti"><div class="emoji">💊</div><h2>Trattamenti</h2><p>Registro interventi.</p></a>
@@ -131,8 +134,51 @@ textarea{min-height:100px}.save{width:100%;border:0;border-radius:16px;backgroun
 </main>
 <script>
 let arniaCorrente=null;
-function getArnie(){return JSON.parse(localStorage.getItem('meli_arnie_v5')||'[]')}
-function setArnie(a){localStorage.setItem('meli_arnie_v5',JSON.stringify(a))}
+let fotoVisitaTemp=[];
+
+function comprimiFoto(file, callback){
+ const reader=new FileReader();
+ reader.onload=function(e){
+   const img=new Image();
+   img.onload=function(){
+     const canvas=document.createElement('canvas');
+     const max=1200; let w=img.width; let h=img.height;
+     if(w>h && w>max){h=Math.round(h*max/w);w=max}
+     if(h>=w && h>max){w=Math.round(w*max/h);h=max}
+     canvas.width=w; canvas.height=h;
+     canvas.getContext('2d').drawImage(img,0,0,w,h);
+     callback(canvas.toDataURL('image/jpeg',0.72));
+   };
+   img.src=e.target.result;
+ };
+ reader.readAsDataURL(file);
+}
+
+function aggiungiFotoVisitaTemp(event){
+ const files=[...event.target.files];
+ if(files.length===0)return;
+ let completate=0;
+ files.forEach(file=>{
+   comprimiFoto(file, data=>{
+     fotoVisitaTemp.push({data:new Date().toLocaleString('it-IT'),src:data});
+     completate++;
+     if(completate===files.length){mostraAnteprimaFotoVisita(); event.target.value='';}
+   });
+ });
+}
+function mostraAnteprimaFotoVisita(){
+ anteprima_foto_visita.innerHTML=fotoVisitaTemp.map((f,i)=>`<div class="photo"><img src="${f.src}"><small>${f.data}</small><button class="save danger" onclick="rimuoviFotoVisitaTemp(${i})">Rimuovi</button></div>`).join('') || '';
+}
+function rimuoviFotoVisitaTemp(i){fotoVisitaTemp.splice(i,1);mostraAnteprimaFotoVisita();}
+
+function salvaVisita(){
+ const r={salvato:new Date().toLocaleString('it-IT'),data:visita_data.value,arnia:visita_arnia.value,forza:visita_forza.value,covata:visita_covata.value,scorte:visita_scorte.value,note:visita_note.value,foto:fotoVisitaTemp};
+ salvaRecord('visite',r);
+ visita_arnia.value=''; visita_note.value=''; fotoVisitaTemp=[]; mostraAnteprimaFotoVisita(); mostra('visite');
+}
+
+function getArnie(){return JSON.parse(localStorage.getItem('meli_arnie_v6')||'[]')}
+function setArnie(a){localStorage.setItem('meli_arnie_v6',JSON.stringify(a))}
 function aggiungiArnia(){
  const numero=nuova_arnia_numero.value.trim(); const nome=nuova_arnia_nome.value.trim();
  if(!numero){alert('Inserisci il numero dell’arnia');return}
@@ -163,24 +209,11 @@ function salvaDettaglioArnia(){
 }
 function aggiungiFotoArnia(event){
  const file=event.target.files[0]; if(!file || !arniaCorrente)return;
- const reader=new FileReader();
- reader.onload=function(e){
-   const img=new Image();
-   img.onload=function(){
-     const canvas=document.createElement('canvas');
-     const max=1200; let w=img.width; let h=img.height;
-     if(w>h && w>max){h=Math.round(h*max/w);w=max}
-     if(h>=w && h>max){w=Math.round(w*max/h);h=max}
-     canvas.width=w; canvas.height=h;
-     canvas.getContext('2d').drawImage(img,0,0,w,h);
-     const data=canvas.toDataURL('image/jpeg',0.72);
-     const arnie=getArnie(); const a=arnie.find(x=>x.id===arniaCorrente); if(!a)return;
-     a.foto=a.foto||[]; a.foto.unshift({data:new Date().toLocaleString('it-IT'),src:data});
-     setArnie(arnie); mostraFotoArnia(a); event.target.value='';
-   };
-   img.src=e.target.result;
- };
- reader.readAsDataURL(file);
+ comprimiFoto(file, data=>{
+   const arnie=getArnie(); const a=arnie.find(x=>x.id===arniaCorrente); if(!a)return;
+   a.foto=a.foto||[]; a.foto.unshift({data:new Date().toLocaleString('it-IT'),src:data});
+   setArnie(arnie); mostraFotoArnia(a); event.target.value='';
+ });
 }
 function mostraFotoArnia(a){
  const box=document.getElementById('galleria_arnia'); if(!box)return;
@@ -204,10 +237,6 @@ function eliminaArnia(){
  if(!confirm('Vuoi eliminare questa arnia?'))return;
  const arnie=getArnie().filter(x=>x.id!==arniaCorrente); setArnie(arnie); arniaCorrente=null; location.hash='arnie'; mostraArnie();
 }
-function salvaVisita(){
- const r={salvato:new Date().toLocaleString('it-IT'),data:visita_data.value,arnia:visita_arnia.value,forza:visita_forza.value,covata:visita_covata.value,scorte:visita_scorte.value,note:visita_note.value};
- salvaRecord('visite',r); visita_arnia.value=''; visita_note.value=''; mostra('visite');
-}
 function salvaGenerico(nome,ids){
  const r={salvato:new Date().toLocaleString('it-IT')}; ids.forEach(id=>{r[id]=document.getElementById(id).value});
  salvaRecord(nome,r); ids.forEach(id=>document.getElementById(id).value=''); mostra(nome);
@@ -216,7 +245,14 @@ function salvaRecord(nome,r){const a=JSON.parse(localStorage.getItem('meli_'+nom
 function mostra(nome){
  const el=document.getElementById('lista_'+nome); if(!el)return;
  const a=JSON.parse(localStorage.getItem('meli_'+nome)||'[]');
- el.innerHTML=a.slice(0,10).map(r=>'<div class="item">'+Object.entries(r).map(([k,v])=>'<b>'+k+'</b>: '+(v||'-')).join('<br>')+'</div>').join('');
+ el.innerHTML=a.slice(0,10).map((r,idx)=>{
+   let fotoHtml='';
+   if(r.foto && r.foto.length){
+     fotoHtml='<div class="photo-grid">'+r.foto.map(f=>`<div class="photo"><img src="${f.src}"><small>${f.data}</small></div>`).join('')+'</div>';
+   }
+   const testo=Object.entries(r).filter(([k])=>k!=='foto').map(([k,v])=>'<b>'+k+'</b>: '+(v||'-')).join('<br>');
+   return '<div class="item">'+testo+fotoHtml+'</div>';
+ }).join('');
 }
 ['visite','produzione','trattamenti','regine','note'].forEach(mostra);
 mostraArnie();
