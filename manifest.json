@@ -3,8 +3,8 @@
   "short_name": "MELI",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#fff4dc",
-  "theme_color": "#9b5f1a",
+  "background_color": "#fbefd1",
+  "theme_color": "#F3D17A",
   "icons": [
     {
       "src": "icon-180.png",
