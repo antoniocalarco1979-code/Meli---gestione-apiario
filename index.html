@@ -23,9 +23,8 @@ label{font-weight:700;font-size:14px;display:block;margin:12px 0 6px}
 input,textarea,select{width:100%;border:1px solid #e1c78b;border-radius:14px;padding:12px;font-size:16px;background:#fffdf8}
 textarea{min-height:100px}.save{width:100%;border:0;border-radius:16px;background:#d9961f;color:#2b1b05;padding:14px;font-weight:800;font-size:16px;margin-top:14px}
 .danger{background:#6b1d0c;color:white}.item{background:#fffdf8;border:1px solid #ead7a8;border-radius:16px;padding:12px;margin-top:10px}
-.arnia-card{background:#fffdf8;border:1px solid #ead7a8;border-radius:18px;padding:14px;margin-top:10px}
-.row{display:flex;gap:10px}.row button{flex:1}
-@media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}}
+.photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}.photo{background:#fffdf8;border:1px solid #ead7a8;border-radius:16px;padding:8px}.photo img{width:100%;border-radius:12px;display:block}.photo small{display:block;margin-top:6px;color:#70511d}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}.photo-grid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -64,13 +63,22 @@ textarea{min-height:100px}.save{width:100%;border:0;border-radius:16px;backgroun
 <label>Telaini scorte</label><input id="det_scorte" type="number">
 <label>Note arnia</label><textarea id="det_note"></textarea>
 <button class="save" onclick="salvaDettaglioArnia()">Salva scheda arnia</button>
-<button class="save danger" onclick="eliminaArnia()">Elimina questa arnia</button>
 </div>
+
+<div class="panel">
+<h3>📷 Foto arnia</h3>
+<p>Puoi scattare una foto direttamente dall’iPad oppure scegliere una foto dalla galleria.</p>
+<label>Scatta / carica foto</label>
+<input id="foto_arnia" type="file" accept="image/*" capture="environment" onchange="aggiungiFotoArnia(event)">
+<div id="galleria_arnia" class="photo-grid"></div>
+</div>
+
 <div class="panel">
 <h3>Storico interventi / visite</h3>
 <label>Nuova nota intervento</label><textarea id="det_intervento" placeholder="Es. aggiunto melario, controllata regina, alimentazione..."></textarea>
 <button class="save" onclick="salvaInterventoArnia()">Salva intervento</button>
 <div id="storico_arnia"></div>
+<button class="save danger" onclick="eliminaArnia()">Elimina questa arnia</button>
 </div>
 </section>
 
@@ -123,21 +131,21 @@ textarea{min-height:100px}.save{width:100%;border:0;border-radius:16px;backgroun
 </main>
 <script>
 let arniaCorrente=null;
-function getArnie(){return JSON.parse(localStorage.getItem('meli_arnie_v4')||'[]')}
-function setArnie(a){localStorage.setItem('meli_arnie_v4',JSON.stringify(a))}
+function getArnie(){return JSON.parse(localStorage.getItem('meli_arnie_v5')||'[]')}
+function setArnie(a){localStorage.setItem('meli_arnie_v5',JSON.stringify(a))}
 function aggiungiArnia(){
  const numero=nuova_arnia_numero.value.trim(); const nome=nuova_arnia_nome.value.trim();
  if(!numero){alert('Inserisci il numero dell’arnia');return}
  const arnie=getArnie();
  const id='arnia_'+Date.now();
- arnie.push({id,numero,nome,stato:'Attiva',forza:'Media',regina:'Da verificare',covata:'',scorte:'',note:'',storico:[]});
+ arnie.push({id,numero,nome,stato:'Attiva',forza:'Media',regina:'Da verificare',covata:'',scorte:'',note:'',storico:[],foto:[]});
  setArnie(arnie); nuova_arnia_numero.value=''; nuova_arnia_nome.value=''; mostraArnie();
 }
 function mostraArnie(){
  const box=document.getElementById('lista_arnie_card'); if(!box)return;
  const arnie=getArnie();
  if(arnie.length===0){box.innerHTML='<div class="panel"><b>Nessuna arnia inserita.</b><br>Aggiungi la prima arnia dal modulo sopra.</div>';return}
- box.innerHTML=arnie.map(a=>`<button class="cardbtn" onclick="apriArnia('${a.id}')"><div class="emoji">🐝</div><h2>Arnia ${a.numero}</h2><p>${a.nome||'Senza posizione'}<br>Stato: ${a.stato||'-'} · Regina: ${a.regina||'-'}</p></button>`).join('');
+ box.innerHTML=arnie.map(a=>`<button class="cardbtn" onclick="apriArnia('${a.id}')"><div class="emoji">🐝</div><h2>Arnia ${a.numero}</h2><p>${a.nome||'Senza posizione'}<br>Stato: ${a.stato||'-'} · Foto: ${(a.foto||[]).length}</p></button>`).join('');
 }
 function apriArnia(id){
  const a=getArnie().find(x=>x.id===id); if(!a)return;
@@ -145,13 +153,43 @@ function apriArnia(id){
  titolo_arnia.textContent='🐝 Arnia '+a.numero+(a.nome?' - '+a.nome:'');
  det_stato.value=a.stato||'Attiva'; det_forza.value=a.forza||'Media'; det_regina.value=a.regina||'Da verificare';
  det_covata.value=a.covata||''; det_scorte.value=a.scorte||''; det_note.value=a.note||''; det_intervento.value='';
- mostraStoricoArnia(a);
+ mostraStoricoArnia(a); mostraFotoArnia(a);
 }
 function salvaDettaglioArnia(){
  const arnie=getArnie(); const a=arnie.find(x=>x.id===arniaCorrente); if(!a)return;
  a.stato=det_stato.value; a.forza=det_forza.value; a.regina=det_regina.value; a.covata=det_covata.value; a.scorte=det_scorte.value; a.note=det_note.value;
  a.storico=a.storico||[]; a.storico.unshift({data:new Date().toLocaleString('it-IT'),tipo:'Aggiornamento scheda',testo:'Stato: '+a.stato+' · Forza: '+a.forza+' · Regina: '+a.regina});
  setArnie(arnie); mostraStoricoArnia(a); alert('Scheda arnia salvata');
+}
+function aggiungiFotoArnia(event){
+ const file=event.target.files[0]; if(!file || !arniaCorrente)return;
+ const reader=new FileReader();
+ reader.onload=function(e){
+   const img=new Image();
+   img.onload=function(){
+     const canvas=document.createElement('canvas');
+     const max=1200; let w=img.width; let h=img.height;
+     if(w>h && w>max){h=Math.round(h*max/w);w=max}
+     if(h>=w && h>max){w=Math.round(w*max/h);h=max}
+     canvas.width=w; canvas.height=h;
+     canvas.getContext('2d').drawImage(img,0,0,w,h);
+     const data=canvas.toDataURL('image/jpeg',0.72);
+     const arnie=getArnie(); const a=arnie.find(x=>x.id===arniaCorrente); if(!a)return;
+     a.foto=a.foto||[]; a.foto.unshift({data:new Date().toLocaleString('it-IT'),src:data});
+     setArnie(arnie); mostraFotoArnia(a); event.target.value='';
+   };
+   img.src=e.target.result;
+ };
+ reader.readAsDataURL(file);
+}
+function mostraFotoArnia(a){
+ const box=document.getElementById('galleria_arnia'); if(!box)return;
+ const foto=a.foto||[];
+ box.innerHTML=foto.map((f,i)=>`<div class="photo"><img src="${f.src}"><small>${f.data}</small><button class="save danger" onclick="eliminaFoto(${i})">Elimina</button></div>`).join('') || '<div class="item">Nessuna foto ancora.</div>';
+}
+function eliminaFoto(i){
+ const arnie=getArnie(); const a=arnie.find(x=>x.id===arniaCorrente); if(!a)return;
+ a.foto.splice(i,1); setArnie(arnie); mostraFotoArnia(a);
 }
 function salvaInterventoArnia(){
  const testo=det_intervento.value.trim(); if(!testo){alert('Scrivi prima una nota intervento');return}
