@@ -1,23 +1,19 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#d9961f">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="MELI">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-180.png">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#d9961f"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MELI"><link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-180.png">
 <title>MELI</title>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#fff3d6;color:#2b1b05}
-header{background:#d9961f;padding:28px 20px;border-bottom-left-radius:28px;border-bottom-right-radius:28px}
-h1{margin:0;font-size:42px}.sub{font-size:15px;margin-top:5px}
+header{background:#d9961f;padding:28px 20px;border-bottom-left-radius:28px;border-bottom-right-radius:28px}h1{margin:0;font-size:42px}.sub{font-size:15px;margin-top:5px}
 main{padding:18px;max-width:850px;margin:auto}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
 a.card,.cardbtn{display:block;text-decoration:none;color:#2b1b05;background:white;border-radius:22px;padding:18px;min-height:112px;box-shadow:0 8px 20px #0002;border:0;text-align:left;width:100%;font:inherit}
-.card:active,.cardbtn:active{transform:scale(.98)}.emoji{font-size:34px}.card h2,.cardbtn h2{font-size:17px;margin:8px 0 4px}.card p,.cardbtn p{font-size:13px;margin:0;color:#70511d}
-.page{display:none}.page:target{display:block}.page:target~#home{display:none}
-#home{display:block}.back{display:inline-block;text-decoration:none;background:#2b1b05;color:white;border-radius:14px;padding:11px 14px;font-weight:700;margin-bottom:14px}
+.emoji{font-size:34px}.card h2,.cardbtn h2{font-size:17px;margin:8px 0 4px}.card p,.cardbtn p{font-size:13px;margin:0;color:#70511d}
+.page{display:none}.page:target{display:block}.page:target~#home{display:none}#home{display:block}
+.back{display:inline-block;text-decoration:none;background:#2b1b05;color:white;border-radius:14px;padding:11px 14px;font-weight:700;margin-bottom:14px}
 .panel{background:white;border-radius:22px;padding:18px;box-shadow:0 8px 20px #0002;margin-bottom:14px}
 label{font-weight:700;font-size:14px;display:block;margin:12px 0 6px}
 input,textarea,select{width:100%;border:1px solid #e1c78b;border-radius:14px;padding:12px;font-size:16px;background:#fffdf8}
@@ -25,237 +21,70 @@ textarea{min-height:100px}.save{width:100%;border:0;border-radius:16px;backgroun
 .danger{background:#6b1d0c;color:white}.item{background:#fffdf8;border:1px solid #ead7a8;border-radius:16px;padding:12px;margin-top:10px}
 .photo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}.photo{background:#fffdf8;border:1px solid #ead7a8;border-radius:16px;padding:8px}.photo img{width:100%;border-radius:12px;display:block}.photo small{display:block;margin-top:6px;color:#70511d}
 @media(min-width:700px){.grid{grid-template-columns:repeat(3,1fr)}.photo-grid{grid-template-columns:repeat(3,1fr)}}
-</style>
-</head>
-<body>
-<header><h1>🐝 MELI</h1><div class="sub">Gestione apiario</div></header>
-<main>
+</style></head>
+<body><header><h1>🐝 MELI</h1><div class="sub">Gestione apiario</div></header><main>
 
-<section id="visita" class="page"><a class="back" href="#">← Home</a><div class="panel">
-<h2>📄 Visita apiario</h2>
-<label>Data visita</label><input id="visita_data" type="date">
-<label>Arnia / numero</label><input id="visita_arnia" type="text">
-<label>Forza famiglia</label><select id="visita_forza"><option>Debole</option><option>Media</option><option>Forte</option></select>
-<label>Covata</label><select id="visita_covata"><option>Assente</option><option>Poca</option><option>Buona</option><option>Molto buona</option></select>
-<label>Scorte</label><select id="visita_scorte"><option>Scarse</option><option>Sufficienti</option><option>Abbondanti</option></select>
-<label>Note visita</label><textarea id="visita_note"></textarea>
-<label>Foto della visita</label>
-<input id="foto_visita_input" type="file" accept="image/*" capture="environment" multiple onchange="aggiungiFotoVisitaTemp(event)">
-<div id="anteprima_foto_visita" class="photo-grid"></div>
-<button class="save" onclick="salvaVisita()">Salva visita con foto</button><div id="lista_visite"></div>
-</div></section>
-
-<section id="arnie" class="page"><a class="back" href="#">← Home</a>
-<div class="panel">
-<h2>🐝 Le mie arnie</h2>
-<p>Qui sotto trovi una sottosezione per ogni arnia dichiarata.</p>
+<section id="visita" class="page"></section>
+<section id="arnie" class="page"><a class="back" href="#">← Home</a><div class="panel"><h2>🐝 Le mie arnie</h2>
 <label>Numero arnia</label><input id="nuova_arnia_numero" placeholder="Es. 1">
 <label>Nome / posizione</label><input id="nuova_arnia_nome" placeholder="Es. Acquacalda - fila 1">
-<button class="save" onclick="aggiungiArnia()">Aggiungi arnia</button>
-</div>
-<div id="lista_arnie_card"></div>
-</section>
-
-<section id="dettaglioArnia" class="page"><a class="back" href="#arnie">← Arnie</a>
-<div class="panel">
+<button class="save" onclick="aggiungiArnia()">Aggiungi arnia</button></div><div id="lista_arnie_card"></div></section>
+<section id="dettaglioArnia" class="page"><a class="back" href="#arnie">← Arnie</a><div class="panel">
 <h2 id="titolo_arnia">🐝 Arnia</h2>
 <label>Stato famiglia</label><select id="det_stato"><option>Attiva</option><option>Da controllare</option><option>Debole</option><option>Orfana</option><option>Sciamata</option></select>
 <label>Forza famiglia</label><select id="det_forza"><option>Debole</option><option>Media</option><option>Forte</option></select>
 <label>Regina</label><select id="det_regina"><option>Presente</option><option>Da verificare</option><option>Da sostituire</option><option>Sostituita</option></select>
-<label>Telaini covata</label><input id="det_covata" type="number">
-<label>Telaini scorte</label><input id="det_scorte" type="number">
-<label>Note arnia</label><textarea id="det_note"></textarea>
-<button class="save" onclick="salvaDettaglioArnia()">Salva scheda arnia</button>
-</div>
+<label>Telaini covata</label><input id="det_covata" type="number"><label>Telaini scorte</label><input id="det_scorte" type="number">
+<label>Note arnia</label><textarea id="det_note"></textarea><button class="save" onclick="salvaDettaglioArnia()">Salva scheda arnia</button></div>
+<div class="panel"><h3>📷 Foto arnia</h3><input id="foto_arnia" type="file" accept="image/*" capture="environment" onchange="aggiungiFotoArnia(event)"><div id="galleria_arnia" class="photo-grid"></div></div>
+<div class="panel"><h3>Storico interventi</h3><textarea id="det_intervento"></textarea><button class="save" onclick="salvaInterventoArnia()">Salva intervento</button><div id="storico_arnia"></div><button class="save danger" onclick="eliminaArnia()">Elimina questa arnia</button></div></section>
 
-<div class="panel">
-<h3>📷 Foto arnia</h3>
-<p>Puoi scattare una foto direttamente dall’iPad oppure scegliere una foto dalla galleria.</p>
-<label>Scatta / carica foto</label>
-<input id="foto_arnia" type="file" accept="image/*" capture="environment" onchange="aggiungiFotoArnia(event)">
-<div id="galleria_arnia" class="photo-grid"></div>
-</div>
+<section id="produzione" class="page"></section><section id="trattamenti" class="page"></section><section id="regine" class="page"></section><section id="note" class="page"></section>
 
-<div class="panel">
-<h3>Storico interventi / visite</h3>
-<label>Nuova nota intervento</label><textarea id="det_intervento" placeholder="Es. aggiunto melario, controllata regina, alimentazione..."></textarea>
-<button class="save" onclick="salvaInterventoArnia()">Salva intervento</button>
-<div id="storico_arnia"></div>
-<button class="save danger" onclick="eliminaArnia()">Elimina questa arnia</button>
-</div>
-</section>
-
-<section id="produzione" class="page"><a class="back" href="#">← Home</a><div class="panel">
-<h2>🍯 Produzione miele</h2>
-<label>Data</label><input id="prod_data" type="date">
-<label>Tipo miele</label><input id="prod_tipo">
-<label>Kg raccolti</label><input id="prod_kg" type="number">
-<label>Vasetti prodotti</label><input id="prod_vasetti" type="number">
-<label>Note</label><textarea id="prod_note"></textarea>
-<button class="save" onclick="salvaGenerico('produzione',['prod_data','prod_tipo','prod_kg','prod_vasetti','prod_note'])">Salva produzione</button><div id="lista_produzione"></div>
+<section id="home"><div class="grid">
+<a class="card" href="#visita"><div class="emoji">📄</div><h2>Visita apiario</h2><p>Scheda con foto.</p></a>
+<a class="card" href="#arnie"><div class="emoji">🐝</div><h2>Le mie arnie</h2><p>Scheda e foto per arnia.</p></a>
+<a class="card" href="#produzione"><div class="emoji">🍯</div><h2>Produzione miele</h2><p>Con foto.</p></a>
+<a class="card" href="#trattamenti"><div class="emoji">💊</div><h2>Trattamenti</h2><p>Con foto.</p></a>
+<a class="card" href="#regine"><div class="emoji">👑</div><h2>Regine</h2><p>Con foto.</p></a>
+<a class="card" href="#note"><div class="emoji">📝</div><h2>Note veloci</h2><p>Con foto.</p></a>
 </div></section>
 
-<section id="trattamenti" class="page"><a class="back" href="#">← Home</a><div class="panel">
-<h2>💊 Trattamenti</h2>
-<label>Data trattamento</label><input id="trat_data" type="date">
-<label>Prodotto</label><input id="trat_prodotto">
-<label>Arnie trattate</label><input id="trat_arnie">
-<label>Dosaggio e note</label><textarea id="trat_note"></textarea>
-<button class="save" onclick="salvaGenerico('trattamenti',['trat_data','trat_prodotto','trat_arnie','trat_note'])">Salva trattamento</button><div id="lista_trattamenti"></div>
-</div></section>
-
-<section id="regine" class="page"><a class="back" href="#">← Home</a><div class="panel">
-<h2>👑 Regine</h2>
-<label>Arnia</label><input id="reg_arnia">
-<label>Anno regina</label><input id="reg_anno" type="number">
-<label>Stato</label><select id="reg_stato"><option>Presente</option><option>Da verificare</option><option>Da sostituire</option><option>Sostituita</option></select>
-<label>Note</label><textarea id="reg_note"></textarea>
-<button class="save" onclick="salvaGenerico('regine',['reg_arnia','reg_anno','reg_stato','reg_note'])">Salva regina</button><div id="lista_regine"></div>
-</div></section>
-
-<section id="note" class="page"><a class="back" href="#">← Home</a><div class="panel">
-<h2>📝 Note veloci</h2>
-<label>Titolo</label><input id="nota_titolo">
-<label>Nota</label><textarea id="nota_testo"></textarea>
-<button class="save" onclick="salvaGenerico('note',['nota_titolo','nota_testo'])">Salva nota</button><div id="lista_note"></div>
-</div></section>
-
-<section id="home">
-<div class="grid">
-<a class="card" href="#visita"><div class="emoji">📄</div><h2>Visita apiario</h2><p>Scheda visita con foto.</p></a>
-<a class="card" href="#arnie"><div class="emoji">🐝</div><h2>Le mie arnie</h2><p>Sottosezione per ogni arnia.</p></a>
-<a class="card" href="#produzione"><div class="emoji">🍯</div><h2>Produzione miele</h2><p>Raccolta e vasetti.</p></a>
-<a class="card" href="#trattamenti"><div class="emoji">💊</div><h2>Trattamenti</h2><p>Registro interventi.</p></a>
-<a class="card" href="#regine"><div class="emoji">👑</div><h2>Regine</h2><p>Gestione regine.</p></a>
-<a class="card" href="#note"><div class="emoji">📝</div><h2>Note veloci</h2><p>Annotazioni libere.</p></a>
-</div>
-</section>
-
-</main>
-<script>
-let arniaCorrente=null;
-let fotoVisitaTemp=[];
-
-function comprimiFoto(file, callback){
- const reader=new FileReader();
- reader.onload=function(e){
-   const img=new Image();
-   img.onload=function(){
-     const canvas=document.createElement('canvas');
-     const max=1200; let w=img.width; let h=img.height;
-     if(w>h && w>max){h=Math.round(h*max/w);w=max}
-     if(h>=w && h>max){w=Math.round(w*max/h);h=max}
-     canvas.width=w; canvas.height=h;
-     canvas.getContext('2d').drawImage(img,0,0,w,h);
-     callback(canvas.toDataURL('image/jpeg',0.72));
-   };
-   img.src=e.target.result;
- };
- reader.readAsDataURL(file);
-}
-
-function aggiungiFotoVisitaTemp(event){
- const files=[...event.target.files];
- if(files.length===0)return;
- let completate=0;
- files.forEach(file=>{
-   comprimiFoto(file, data=>{
-     fotoVisitaTemp.push({data:new Date().toLocaleString('it-IT'),src:data});
-     completate++;
-     if(completate===files.length){mostraAnteprimaFotoVisita(); event.target.value='';}
-   });
+</main><script>
+let arniaCorrente=null; let tempFoto={visite:[],produzione:[],trattamenti:[],regine:[],note:[]};
+const sezioni={
+visite:{id:'visita',titolo:'📄 Visita apiario',campi:[['date','Data visita','data'],['text','Arnia / numero','arnia'],['select','Forza famiglia','forza',['Debole','Media','Forte']],['select','Covata','covata',['Assente','Poca','Buona','Molto buona']],['select','Scorte','scorte',['Scarse','Sufficienti','Abbondanti']],['textarea','Note visita','note']]},
+produzione:{id:'produzione',titolo:'🍯 Produzione miele',campi:[['date','Data','data'],['text','Tipo miele','tipo'],['number','Kg raccolti','kg'],['number','Vasetti prodotti','vasetti'],['textarea','Note produzione','note']]},
+trattamenti:{id:'trattamenti',titolo:'💊 Trattamenti',campi:[['date','Data trattamento','data'],['text','Prodotto / principio attivo','prodotto'],['text','Arnie trattate','arnie'],['textarea','Dosaggio e note','note']]},
+regine:{id:'regine',titolo:'👑 Regine',campi:[['text','Arnia','arnia'],['number','Anno regina','anno'],['select','Stato','stato',['Presente','Da verificare','Da sostituire','Sostituita']],['textarea','Note regina','note']]},
+note:{id:'note',titolo:'📝 Note veloci',campi:[['text','Titolo','titolo'],['textarea','Nota','nota']]}
+};
+function creaSezioni(){
+ Object.entries(sezioni).forEach(([nome,s])=>{
+ let html=`<a class="back" href="#">← Home</a><div class="panel"><h2>${s.titolo}</h2>`;
+ s.campi.forEach(c=>{html+=`<label>${c[1]}</label>`; if(c[0]=='textarea')html+=`<textarea id="${nome}_${c[2]}"></textarea>`; else if(c[0]=='select')html+=`<select id="${nome}_${c[2]}">${c[3].map(x=>`<option>${x}</option>`).join('')}</select>`; else html+=`<input type="${c[0]}" id="${nome}_${c[2]}">`;});
+ html+=`<label>Foto</label><input type="file" accept="image/*" capture="environment" multiple onchange="aggiungiFotoTemp('${nome}',event)"><div id="anteprima_${nome}" class="photo-grid"></div><button class="save" onclick="salvaSezione('${nome}')">Salva con foto</button><div id="lista_${nome}"></div></div>`;
+ document.getElementById(s.id).innerHTML=html; mostra(nome);
  });
 }
-function mostraAnteprimaFotoVisita(){
- anteprima_foto_visita.innerHTML=fotoVisitaTemp.map((f,i)=>`<div class="photo"><img src="${f.src}"><small>${f.data}</small><button class="save danger" onclick="rimuoviFotoVisitaTemp(${i})">Rimuovi</button></div>`).join('') || '';
-}
-function rimuoviFotoVisitaTemp(i){fotoVisitaTemp.splice(i,1);mostraAnteprimaFotoVisita();}
+function comprimiFoto(file, cb){const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');let w=img.width,h=img.height,max=1200;if(w>h&&w>max){h=Math.round(h*max/w);w=max}if(h>=w&&h>max){w=Math.round(w*max/h);h=max}canvas.width=w;canvas.height=h;canvas.getContext('2d').drawImage(img,0,0,w,h);cb(canvas.toDataURL('image/jpeg',.72));};img.src=e.target.result};r.readAsDataURL(file)}
+function aggiungiFotoTemp(nome,event){[...event.target.files].forEach(file=>comprimiFoto(file,data=>{tempFoto[nome].push({data:new Date().toLocaleString('it-IT'),src:data});mostraAnteprima(nome)}));event.target.value=''}
+function mostraAnteprima(nome){document.getElementById('anteprima_'+nome).innerHTML=tempFoto[nome].map((f,i)=>`<div class="photo"><img src="${f.src}"><small>${f.data}</small><button class="save danger" onclick="tempFoto['${nome}'].splice(${i},1);mostraAnteprima('${nome}')">Rimuovi</button></div>`).join('')}
+function salvaSezione(nome){const s=sezioni[nome], r={salvato:new Date().toLocaleString('it-IT'),foto:tempFoto[nome]};s.campi.forEach(c=>{const el=document.getElementById(nome+'_'+c[2]);r[c[1]]=el.value;el.value=''});salvaRecord(nome,r);tempFoto[nome]=[];mostraAnteprima(nome);mostra(nome)}
+function salvaRecord(nome,r){const a=JSON.parse(localStorage.getItem('meli_'+nome)||'[]');a.unshift(r);localStorage.setItem('meli_'+nome,JSON.stringify(a))}
+function mostra(nome){const el=document.getElementById('lista_'+nome);if(!el)return;const a=JSON.parse(localStorage.getItem('meli_'+nome)||'[]');el.innerHTML=a.slice(0,20).map(r=>{let foto=(r.foto||[]).map(f=>`<div class="photo"><img src="${f.src}"><small>${f.data}</small></div>`).join('');let txt=Object.entries(r).filter(([k])=>k!='foto').map(([k,v])=>`<b>${k}</b>: ${v||'-'}`).join('<br>');return `<div class="item">${txt}${foto?'<div class="photo-grid">'+foto+'</div>':''}</div>`}).join('')}
 
-function salvaVisita(){
- const r={salvato:new Date().toLocaleString('it-IT'),data:visita_data.value,arnia:visita_arnia.value,forza:visita_forza.value,covata:visita_covata.value,scorte:visita_scorte.value,note:visita_note.value,foto:fotoVisitaTemp};
- salvaRecord('visite',r);
- visita_arnia.value=''; visita_note.value=''; fotoVisitaTemp=[]; mostraAnteprimaFotoVisita(); mostra('visite');
-}
-
-function getArnie(){return JSON.parse(localStorage.getItem('meli_arnie_v6')||'[]')}
-function setArnie(a){localStorage.setItem('meli_arnie_v6',JSON.stringify(a))}
-function aggiungiArnia(){
- const numero=nuova_arnia_numero.value.trim(); const nome=nuova_arnia_nome.value.trim();
- if(!numero){alert('Inserisci il numero dell’arnia');return}
- const arnie=getArnie();
- const id='arnia_'+Date.now();
- arnie.push({id,numero,nome,stato:'Attiva',forza:'Media',regina:'Da verificare',covata:'',scorte:'',note:'',storico:[],foto:[]});
- setArnie(arnie); nuova_arnia_numero.value=''; nuova_arnia_nome.value=''; mostraArnie();
-}
-function mostraArnie(){
- const box=document.getElementById('lista_arnie_card'); if(!box)return;
- const arnie=getArnie();
- if(arnie.length===0){box.innerHTML='<div class="panel"><b>Nessuna arnia inserita.</b><br>Aggiungi la prima arnia dal modulo sopra.</div>';return}
- box.innerHTML=arnie.map(a=>`<button class="cardbtn" onclick="apriArnia('${a.id}')"><div class="emoji">🐝</div><h2>Arnia ${a.numero}</h2><p>${a.nome||'Senza posizione'}<br>Stato: ${a.stato||'-'} · Foto: ${(a.foto||[]).length}</p></button>`).join('');
-}
-function apriArnia(id){
- const a=getArnie().find(x=>x.id===id); if(!a)return;
- arniaCorrente=id; location.hash='dettaglioArnia';
- titolo_arnia.textContent='🐝 Arnia '+a.numero+(a.nome?' - '+a.nome:'');
- det_stato.value=a.stato||'Attiva'; det_forza.value=a.forza||'Media'; det_regina.value=a.regina||'Da verificare';
- det_covata.value=a.covata||''; det_scorte.value=a.scorte||''; det_note.value=a.note||''; det_intervento.value='';
- mostraStoricoArnia(a); mostraFotoArnia(a);
-}
-function salvaDettaglioArnia(){
- const arnie=getArnie(); const a=arnie.find(x=>x.id===arniaCorrente); if(!a)return;
- a.stato=det_stato.value; a.forza=det_forza.value; a.regina=det_regina.value; a.covata=det_covata.value; a.scorte=det_scorte.value; a.note=det_note.value;
- a.storico=a.storico||[]; a.storico.unshift({data:new Date().toLocaleString('it-IT'),tipo:'Aggiornamento scheda',testo:'Stato: '+a.stato+' · Forza: '+a.forza+' · Regina: '+a.regina});
- setArnie(arnie); mostraStoricoArnia(a); alert('Scheda arnia salvata');
-}
-function aggiungiFotoArnia(event){
- const file=event.target.files[0]; if(!file || !arniaCorrente)return;
- comprimiFoto(file, data=>{
-   const arnie=getArnie(); const a=arnie.find(x=>x.id===arniaCorrente); if(!a)return;
-   a.foto=a.foto||[]; a.foto.unshift({data:new Date().toLocaleString('it-IT'),src:data});
-   setArnie(arnie); mostraFotoArnia(a); event.target.value='';
- });
-}
-function mostraFotoArnia(a){
- const box=document.getElementById('galleria_arnia'); if(!box)return;
- const foto=a.foto||[];
- box.innerHTML=foto.map((f,i)=>`<div class="photo"><img src="${f.src}"><small>${f.data}</small><button class="save danger" onclick="eliminaFoto(${i})">Elimina</button></div>`).join('') || '<div class="item">Nessuna foto ancora.</div>';
-}
-function eliminaFoto(i){
- const arnie=getArnie(); const a=arnie.find(x=>x.id===arniaCorrente); if(!a)return;
- a.foto.splice(i,1); setArnie(arnie); mostraFotoArnia(a);
-}
-function salvaInterventoArnia(){
- const testo=det_intervento.value.trim(); if(!testo){alert('Scrivi prima una nota intervento');return}
- const arnie=getArnie(); const a=arnie.find(x=>x.id===arniaCorrente); if(!a)return;
- a.storico=a.storico||[]; a.storico.unshift({data:new Date().toLocaleString('it-IT'),tipo:'Intervento',testo});
- setArnie(arnie); det_intervento.value=''; mostraStoricoArnia(a);
-}
-function mostraStoricoArnia(a){
- storico_arnia.innerHTML=(a.storico||[]).slice(0,20).map(s=>`<div class="item"><b>${s.tipo}</b><br><small>${s.data}</small><br>${s.testo}</div>`).join('') || '<div class="item">Nessuno storico ancora.</div>';
-}
-function eliminaArnia(){
- if(!confirm('Vuoi eliminare questa arnia?'))return;
- const arnie=getArnie().filter(x=>x.id!==arniaCorrente); setArnie(arnie); arniaCorrente=null; location.hash='arnie'; mostraArnie();
-}
-function salvaGenerico(nome,ids){
- const r={salvato:new Date().toLocaleString('it-IT')}; ids.forEach(id=>{r[id]=document.getElementById(id).value});
- salvaRecord(nome,r); ids.forEach(id=>document.getElementById(id).value=''); mostra(nome);
-}
-function salvaRecord(nome,r){const a=JSON.parse(localStorage.getItem('meli_'+nome)||'[]');a.unshift(r);localStorage.setItem('meli_'+nome,JSON.stringify(a));}
-function mostra(nome){
- const el=document.getElementById('lista_'+nome); if(!el)return;
- const a=JSON.parse(localStorage.getItem('meli_'+nome)||'[]');
- el.innerHTML=a.slice(0,10).map((r,idx)=>{
-   let fotoHtml='';
-   if(r.foto && r.foto.length){
-     fotoHtml='<div class="photo-grid">'+r.foto.map(f=>`<div class="photo"><img src="${f.src}"><small>${f.data}</small></div>`).join('')+'</div>';
-   }
-   const testo=Object.entries(r).filter(([k])=>k!=='foto').map(([k,v])=>'<b>'+k+'</b>: '+(v||'-')).join('<br>');
-   return '<div class="item">'+testo+fotoHtml+'</div>';
- }).join('');
-}
-['visite','produzione','trattamenti','regine','note'].forEach(mostra);
-mostraArnie();
-</script>
-</body>
-</html>
+// ARNIE
+function getArnie(){return JSON.parse(localStorage.getItem('meli_arnie_v7')||'[]')}function setArnie(a){localStorage.setItem('meli_arnie_v7',JSON.stringify(a))}
+function aggiungiArnia(){const numero=nuova_arnia_numero.value.trim(),nome=nuova_arnia_nome.value.trim();if(!numero){alert('Inserisci il numero dell’arnia');return}const a=getArnie();a.push({id:'arnia_'+Date.now(),numero,nome,stato:'Attiva',forza:'Media',regina:'Da verificare',covata:'',scorte:'',note:'',storico:[],foto:[]});setArnie(a);nuova_arnia_numero.value='';nuova_arnia_nome.value='';mostraArnie()}
+function mostraArnie(){const box=document.getElementById('lista_arnie_card');if(!box)return;const arnie=getArnie();box.innerHTML=arnie.length?arnie.map(a=>`<button class="cardbtn" onclick="apriArnia('${a.id}')"><div class="emoji">🐝</div><h2>Arnia ${a.numero}</h2><p>${a.nome||'Senza posizione'}<br>Foto: ${(a.foto||[]).length}</p></button>`).join(''):'<div class="panel"><b>Nessuna arnia inserita.</b></div>'}
+function apriArnia(id){const a=getArnie().find(x=>x.id==id);if(!a)return;arniaCorrente=id;location.hash='dettaglioArnia';titolo_arnia.textContent='🐝 Arnia '+a.numero+(a.nome?' - '+a.nome:'');det_stato.value=a.stato||'Attiva';det_forza.value=a.forza||'Media';det_regina.value=a.regina||'Da verificare';det_covata.value=a.covata||'';det_scorte.value=a.scorte||'';det_note.value=a.note||'';mostraFotoArnia(a);mostraStoricoArnia(a)}
+function salvaDettaglioArnia(){const arnie=getArnie(),a=arnie.find(x=>x.id==arniaCorrente);if(!a)return;a.stato=det_stato.value;a.forza=det_forza.value;a.regina=det_regina.value;a.covata=det_covata.value;a.scorte=det_scorte.value;a.note=det_note.value;a.storico.unshift({data:new Date().toLocaleString('it-IT'),tipo:'Aggiornamento',testo:'Scheda aggiornata'});setArnie(arnie);mostraStoricoArnia(a);alert('Salvato')}
+function aggiungiFotoArnia(e){const f=e.target.files[0];if(!f)return;comprimiFoto(f,data=>{const arnie=getArnie(),a=arnie.find(x=>x.id==arniaCorrente);a.foto.unshift({data:new Date().toLocaleString('it-IT'),src:data});setArnie(arnie);mostraFotoArnia(a);e.target.value=''})}
+function mostraFotoArnia(a){galleria_arnia.innerHTML=(a.foto||[]).map((f,i)=>`<div class="photo"><img src="${f.src}"><small>${f.data}</small><button class="save danger" onclick="eliminaFoto(${i})">Elimina</button></div>`).join('')||'<div class="item">Nessuna foto ancora.</div>'}
+function eliminaFoto(i){const arnie=getArnie(),a=arnie.find(x=>x.id==arniaCorrente);a.foto.splice(i,1);setArnie(arnie);mostraFotoArnia(a)}
+function salvaInterventoArnia(){const t=det_intervento.value.trim();if(!t)return;const arnie=getArnie(),a=arnie.find(x=>x.id==arniaCorrente);a.storico.unshift({data:new Date().toLocaleString('it-IT'),tipo:'Intervento',testo:t});setArnie(arnie);det_intervento.value='';mostraStoricoArnia(a)}
+function mostraStoricoArnia(a){storico_arnia.innerHTML=(a.storico||[]).map(s=>`<div class="item"><b>${s.tipo}</b><br><small>${s.data}</small><br>${s.testo}</div>`).join('')||'<div class="item">Nessuno storico.</div>'}
+function eliminaArnia(){if(!confirm('Eliminare questa arnia?'))return;setArnie(getArnie().filter(x=>x.id!=arniaCorrente));location.hash='arnie';mostraArnie()}
+creaSezioni();mostraArnie();
+</script></body></html>
